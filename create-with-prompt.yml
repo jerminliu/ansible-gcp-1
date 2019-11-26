@@ -4,14 +4,24 @@
   vars:
       gcp_project: widansible
       gcp_cred_kind: serviceaccount
-      gcp_cred_file: /root/widansible.json
+      gcp_cred_file: /data/gcp/widansible-e50257d17b67.json
       zone: "asia-southeast1-c"
       region: "asia-southeast1"
+  vars_prompt:
+    - name: vmname
+      prompt: "Enter VM name"
+      private: no
+    - name: size
+      prompt: "Enter VM disk size"
+      private: no
+    - name: machine
+      prompt: "Enter VM machine type (f1-micro or g1-small or n1-standard-1"
+      private: no
   tasks:
    - name: create a disk
      gcp_compute_disk:
-         name: 'disk-instance1'
-         size_gb: 10
+         name: "{{ vmname }}"
+         size_gb: "{{ size }}"
          source_image: 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts'
          zone: "{{ zone }}"
          project: "{{ gcp_project }}"
@@ -24,8 +34,8 @@
    - name: create a instance
      gcp_compute_instance:
          state: present
-         name: test-vm1
-         machine_type: f1-micro
+         name: "{{ vmname }}"
+         machine_type: "{{ machine }}"
          disks:
            - auto_delete: true
              boot: true
