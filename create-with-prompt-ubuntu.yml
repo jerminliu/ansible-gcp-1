@@ -10,12 +10,9 @@
       prompt: "Enter VM disk size (in gigabyte)"
       default: "10"
       private: no
-    - name: linux
-      prompt: "Enter VM OS (Linux: debian or centos)"
-      default: "centos"
-      private: no
     - name: versi
-      prompt: "Enter VM versi OS (centos: 6 or 7 or 8, debian: 9 or 10)"
+      prompt: "Enter Ubuntu VM version (1604, 1804)"
+      default: "1804"
       private: no
     - name: machine
       prompt: "Enter VM machine type (f1-micro or g1-small or n1-standard-1"
@@ -32,7 +29,7 @@
      gcp_compute_disk:
          name: "{{ vmname }}"
          size_gb: "{{ size }}"
-         source_image: 'projects/{{ linux }}-cloud/global/images/family/{{ linux }}-{{ versi }}'
+         source_image: 'projects/ubuntu-os-cloud/global/images/family/ubuntu-minimal-{{ versi }}-lts'
          zone: "{{ zone }}"
          project: "{{ gcp_project }}"
          auth_kind: "{{ gcp_cred_kind }}"
