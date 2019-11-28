@@ -43,4 +43,4 @@
            - https://www.googleapis.com/auth/compute
      register: instance
    - debug:
-       msg: {{ address }}
+       var: address
