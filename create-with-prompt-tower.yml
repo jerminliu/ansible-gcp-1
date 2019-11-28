@@ -14,9 +14,9 @@
          size_gb: "{{ size }}"
          source_image: 'projects/{{ linux }}-cloud/global/images/family/{{ linux }}-{{ versi }}'
          zone: "{{ zone }}"
-         project: "{{ GCE_PROJECT }}"
-         auth_kind: "{{ gcp_cred_kind }}"
-         service_account_file: "{{ GCE_CREDENTIALS_FILE_PATH }}"
+         #project: "{{ GCE_PROJECT }}"
+         #auth_kind: "{{ gcp_cred_kind }}"
+         #service_account_file: "{{ GCE_CREDENTIALS_FILE_PATH }}"
          scopes:
            - https://www.googleapis.com/auth/compute
          state: present
@@ -37,9 +37,9 @@
                    nat_ip: 
                    type: 'ONE_TO_ONE_NAT'
          zone: "{{ zone }}"
-         project: "{{ GCP_PROJECT }}"
-         auth_kind: "{{ gcp_cred_kind }}"
-         service_account_file: "{{ GCE_CREDENTIALS_FILE_PATH }}"
+         #project: "{{ GCP_PROJECT }}"
+         #auth_kind: "{{ gcp_cred_kind }}"
+         #service_account_file: "{{ GCE_CREDENTIALS_FILE_PATH }}"
          scopes:
            - https://www.googleapis.com/auth/compute
      register: instance
