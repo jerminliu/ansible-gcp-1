@@ -60,7 +60,7 @@
        state: latest
 
    - name: Create backup directory
-       file:
+     file:
        path: /data/backups/etc/ssh
        owner: root
        group: root
