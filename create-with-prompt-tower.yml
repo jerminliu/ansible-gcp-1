@@ -42,3 +42,5 @@
          scopes:
            - https://www.googleapis.com/auth/compute
      register: instance
+   - debug:
+       msg: {{ address }}
