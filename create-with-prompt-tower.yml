@@ -2,9 +2,6 @@
   hosts: localhost
   gather_facts: no
   vars:
-      gcp_project: widansible
-      gcp_cred_kind: serviceaccount
-      gcp_cred_file: /var/lib/awx/projects/widansible-e50257d17b67.json
       zone: "asia-southeast1-c"
       region: "asia-southeast1"
   tasks:
@@ -14,13 +11,18 @@
          size_gb: "{{ size }}"
          source_image: 'projects/{{ linux }}-cloud/global/images/family/{{ linux }}-{{ versi }}'
          zone: "{{ zone }}"
-         #project: "{{ GCE_PROJECT }}"
-         #auth_kind: "{{ gcp_cred_kind }}"
-         #service_account_file: "{{ GCE_CREDENTIALS_FILE_PATH }}"
          scopes:
            - https://www.googleapis.com/auth/compute
          state: present
      register: disk
+   - name: create a address
+     gcp_compute_address:
+         name: "{{ vmname }}"
+         region: "{{ region }}"
+         scopes:
+           - https://www.googleapis.com/auth/compute
+         state: present
+     register: address
    - name: create a instance
      gcp_compute_instance:
          state: present
@@ -37,9 +39,6 @@
                    nat_ip: 
                    type: 'ONE_TO_ONE_NAT'
          zone: "{{ zone }}"
-         #project: "{{ GCP_PROJECT }}"
-         #auth_kind: "{{ gcp_cred_kind }}"
-         #service_account_file: "{{ GCE_CREDENTIALS_FILE_PATH }}"
          scopes:
            - https://www.googleapis.com/auth/compute
      register: instance
