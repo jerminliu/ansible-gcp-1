@@ -44,3 +44,73 @@
      register: instance
    - debug:
        var: address.address
+   - name: Wait for SSH to come up
+     wait_for: host={{ address.address }} port=22 delay=10 timeout=60
+   - name: Add host to groupname
+     add_host: hostname={{ address.address }} groupname=new_instances
+
+- name: Manage new instances
+  hosts: new_instances
+  connection: ssh
+  sudo: True
+  tasks:
+   - name: install openscap scanner
+     package:
+       name: ['openscap-scanner, scap-security-guide']
+       state: latest
+
+   - name: Create backup directory
+       file:
+       path: /data/backups/etc/ssh
+       owner: root
+       group: root
+       state: directory
+   - name: Backup sshd_config
+     fetch:
+       src: /etc/ssh/sshd_config
+       dest: ./backups/sshd_config
+       flat: yes
+   - name: Copy sshd_config
+     copy:
+       src: ./backups/sshd_config
+       dest: /data/backups/etc/ssh/sshd_config
+       owner: root
+       group: root
+       mode: '0600'
+   - name: Deduplicate values from /etc/ssh/sshd_config
+     lineinfile:
+       backup: yes
+       path: /etc/ssh/sshd_config
+       create: false
+       regexp: (?i)^\s*Port
+       state: absent
+   - name: Insert correct line to /etc/ssh/sshd_config
+     lineinfile:
+       path: /etc/ssh/sshd_config
+       create: true
+       line: Port 3943
+       state: present
+       insertafter: ^#?Port
+       validate: /usr/sbin/sshd -t -f %s
+   - name: Insert correct line to /etc/ssh/sshd_config
+     lineinfile:
+       path: /etc/ssh/sshd_config
+       create: true
+       line: Port 22
+       state: present
+       insertafter: ^#?Port
+       validate: /usr/sbin/sshd -t -f %s
+   - name: Restart service sshd, in all cases
+     service:
+       name: sshd
+       state: restarted
+   - name: Allow sshd to listen on tcp port 3943
+     seport:
+       ports: 3943
+       proto: tcp
+       setype: ssh_port_t
+       state: present
+   - name: Restart service sshd, in all cases
+     service:
+       name: sshd
+       state: restarted
